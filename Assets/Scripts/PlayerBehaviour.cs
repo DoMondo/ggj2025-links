@@ -174,6 +174,11 @@ public class PlayerBehaviour : MonoBehaviour
             Debug.Log("Cambiando a escena win");
             SceneManager.LoadScene("Win"); 
         }
+        if (metaAlcanzada==true && light_size_idx < 6 && TimeController.instance.tiempo > 0)
+        {
+            Debug.Log("Recargar Escena");
+            SceneManager.LoadScene("Nivel");
+        }
 
     }
 }
