@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Espada
+  - bola1
+  - bola2
+  - bola3
+  - bola4
+  - bola5
+  - bola6
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - suelo
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - Plataformas
+  - Player
+  - ColliderCamara
+  - Luz
+  - Assets
+  - Fondo
+  - Bosque+Ciudad+Gruta
+  - Tren
+  - Vallas
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0

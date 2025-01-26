@@ -1,0 +1,32 @@
+#pragma kernel Vignette
+
+RWTexture2D<float4> _Result;
+
+int _ResultWidth;
+int _ResultHeight;
+float _centerX;
+float _centerY;
+float _pixeldistance;
+float _grayscale;
+
+[numthreads(1, 1, 1)]
+void Vignette(uint3 id : SV_DispatchThreadID)
+{
+
+    float x = id.x;
+    float y = id.y;
+    float distance_to_center = sqrt((x - _centerX) * (x - _centerX) + (y - _centerY) * (y - _centerY));
+    float grayscale_value = _Result[id.xy][0].r + _Result[id.xy].g * 0.587 + _Result[id.xy].b * 0.114;
+    float4 value = _Result[id.xy] * (1 - _grayscale) + float4(grayscale_value, grayscale_value, grayscale_value, 1.0) * _grayscale;
+    float factor = (distance_to_center - _pixeldistance) / _ResultHeight;
+    factor = pow(factor , 0.02);
+    //_Result[id.xy] = float4(0.0, 0.0, 0.0, 0.0) * factor + value * (1 - factor);
+    if (_pixeldistance > distance_to_center)
+    {
+        _Result[id.xy] = value;
+    }
+    else
+    {
+        _Result[id.xy] = float4(0.0, 0.0, 0.0, 0.0);
+    }
+}
