@@ -4332,6 +4332,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f81300541dd7d374098dbb68a43fd356, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bola_idx: 4
+  reached_first_it: 1
 --- !u!4 &246000348 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4997363914653799546, guid: b2a105c2c8a753a48ab0987441da67e4, type: 3}
@@ -9392,7 +9394,7 @@ Transform:
   m_GameObject: {fileID: 480761477}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000011175872, y: -0.0000001192093, z: -9.313227e-10, w: 1}
-  m_LocalPosition: {x: -69.8, y: -1.8, z: -10}
+  m_LocalPosition: {x: -71.5, y: 0.2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10996,7 +10998,7 @@ Transform:
   m_GameObject: {fileID: 585587928}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -40.6, y: -1.21, z: -1}
+  m_LocalPosition: {x: -37.3, y: 1.5, z: -1}
   m_LocalScale: {x: 0.08323786, y: 0.08323786, z: 0.08323786}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15426,6 +15428,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f81300541dd7d374098dbb68a43fd356, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bola_idx: 1
+  reached_first_it: 1
 --- !u!1001 &815726008
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17534,6 +17538,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f81300541dd7d374098dbb68a43fd356, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bola_idx: 2
+  reached_first_it: 1
 --- !u!1001 &940226416
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24255,7 +24261,7 @@ Transform:
   m_GameObject: {fileID: 1353764191}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000011175872, y: -0.0000001192093, z: -9.313227e-10, w: 1}
-  m_LocalPosition: {x: -69.8, y: -1.8, z: -10}
+  m_LocalPosition: {x: -71.5, y: 0.2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -24316,7 +24322,6 @@ MonoBehaviour:
   - 1e+9
   - 1e+9
   - 1e+9
-  - 1e+9
   centerY:
   - 1e+9
   - 1e+9
@@ -24324,9 +24329,9 @@ MonoBehaviour:
   - 1e+9
   - 1e+9
   - 1e+9
-  - 1e+9
   grayscale: 0
-  num_elements_to_draw: 0
+  movingBallMode: 0
+  num_elements_to_draw: 1
 --- !u!82 &1353764199
 AudioSource:
   m_ObjectHideFlags: 0
@@ -24348,7 +24353,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 7.5979195
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -24687,16 +24692,10 @@ MonoBehaviour:
   numeroRecuerdos: {fileID: 855157063}
   moverBola: 0
   moverJugador: 1
-  bola0_reached: 0
   lookingLeft: 0
   metaAlcanzada: 0
   tiempoAcabado: 0
-  bola1: {fileID: 0}
-  bola2: {fileID: 0}
-  bola3: {fileID: 0}
-  bola4: {fileID: 0}
-  bola5: {fileID: 0}
-  manoAnimation: {fileID: 3620634167587436999, guid: 9f9ffeb947351444ba4ffab604e973d3, type: 3}
+  bola_reached: 000000000000
   velAnim: 0
   curvAnim: 0
   "tama\xF1oBola": 0.2
@@ -28916,6 +28915,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f81300541dd7d374098dbb68a43fd356, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bola_idx: 5
+  reached_first_it: 1
 --- !u!4 &1620496413 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 651318155618720492, guid: 210cf8b96b90e584083e8b1ab31d8d8b, type: 3}
@@ -35012,6 +35013,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f81300541dd7d374098dbb68a43fd356, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bola_idx: 3
+  reached_first_it: 1
 --- !u!1001 &1959227648
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39131,11 +39134,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 835558543703367254, guid: 3f7175ea9f0eea947a201c95346ae424, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -69.8
+      value: -71.5
       objectReference: {fileID: 0}
     - target: {fileID: 835558543703367254, guid: 3f7175ea9f0eea947a201c95346ae424, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.8
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 835558543703367254, guid: 3f7175ea9f0eea947a201c95346ae424, type: 3}
       propertyPath: m_LocalPosition.z
@@ -39236,7 +39239,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3455608070869711604, guid: 1080322ccf165dd46a62f0b3dde71f43, type: 3}
       propertyPath: m_TagString
-      value: bola5
+      value: bola6
       objectReference: {fileID: 0}
     - target: {fileID: 4402077492210238260, guid: 1080322ccf165dd46a62f0b3dde71f43, type: 3}
       propertyPath: m_LocalPosition.x
@@ -39519,7 +39522,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7192271141056812758, guid: 518dbf782c4f411469c729dc710d1c41, type: 3}
       propertyPath: m_TagString
-      value: bola6
+      value: bola5
       objectReference: {fileID: 0}
     - target: {fileID: 8365894832945658074, guid: 518dbf782c4f411469c729dc710d1c41, type: 3}
       propertyPath: m_LocalPosition.x
@@ -39586,10 +39589,10 @@ SceneRoots:
   - {fileID: 588674390}
   - {fileID: 1339017504}
   - {fileID: 585587931}
-  - {fileID: 9219500864909713607}
   - {fileID: 8229335448851723052}
   - {fileID: 1404013288571600952}
   - {fileID: 5612233638097127210}
+  - {fileID: 9219500864909713607}
   - {fileID: 6252706905607049166}
   - {fileID: 260228237}
   - {fileID: 1768363752}

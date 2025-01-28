@@ -19,6 +19,7 @@ public class ElShader : MonoBehaviour
     public float[] centerY;
 
     [Range(0, 1)] public float grayscale;
+    public bool movingBallMode;
     public int num_elements_to_draw;
 
     private void Awake()
@@ -64,9 +65,14 @@ public class ElShader : MonoBehaviour
         shader.SetInt("_pixeldistance",  distance);
 
         shader.SetFloat("_grayscale", grayscale);
-        shader.SetFloats("_centerX", centerX);
-        shader.SetFloats("_centerY", centerY);
+        for (int i = 0; i < 6; i++)
+        {
+            shader.SetFloat("_centerX" + i, centerX[i]);
+            shader.SetFloat("_centerY" + i, centerY[i]);
+
+        }
         shader.SetInt("_num_elements_to_draw", num_elements_to_draw);
+        shader.SetBool("_moving_ball_mode", movingBallMode);
 
         shader.SetTexture(mainKernel, "_Result", _renderTexture);
         shader.GetKernelThreadGroupSizes(mainKernel, out uint xGroupSize, out uint yGroupSize, out _);

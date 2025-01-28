@@ -5,54 +5,137 @@ RWTexture2D<float4> _Result;
 int _ResultWidth;
 int _ResultHeight;
 
-float _centerX[7];
-float _centerY[7];
+float _centerX0;
+float _centerY0;
+float _centerX1;
+float _centerY1;
+float _centerX2;
+float _centerY2;
+float _centerX3;
+float _centerY3;
+float _centerX4;
+float _centerY4;
+float _centerX5;
+float _centerY5;
+
 int _num_elements_to_draw;
 
 float _pixeldistance;
 float _grayscale;
+bool _moving_ball_mode;
+ 
+float3 HUEtoRGB(in float H)
+{
+	float R = abs(H * 6 - 3) - 1;
+	float G = 2 - abs(H * 6 - 2);
+	float B = 2 - abs(H * 6 - 4);
+	return saturate(float3(R,G,B));
+}
+ float Epsilon = 1e-10;
+ 
+float3 RGBtoHCV(in float3 RGB)
+{
+	float4 P = (RGB.g < RGB.b) ? float4(RGB.bg, -1.0, 2.0/3.0) : float4(RGB.gb, 0.0, -1.0/3.0);
+	float4 Q = (RGB.r < P.x) ? float4(P.xyw, RGB.r) : float4(RGB.r, P.yzx);
+	float C = Q.x - min(Q.w, Q.y);
+	float H = abs((Q.w - Q.y) / (6 * C + Epsilon) + Q.z);
+	return float3(H, C, Q.x);
+}
+
+float3 HSVtoRGB(in float3 HSV)
+{
+	float3 RGB = HUEtoRGB(HSV.x);
+	return ((RGB - 1) * HSV.y + 1) * HSV.z;
+}
 
 [numthreads(1, 1, 1)]
 void Vignette(uint3 id : SV_DispatchThreadID)
 {
+    float _centerX[] = {_centerX0, _centerX1, _centerX2, _centerX3, _centerX4, _centerX5};
+    float _centerY[] = {_centerY0, _centerY1, _centerY2, _centerY3, _centerY4, _centerY5};
     float x = id.x;
     float y = id.y;
     float grayscale_value = _Result[id.xy][0].r + _Result[id.xy].g * 0.587 + _Result[id.xy].b * 0.114;
     float4 value = _Result[id.xy] * (1 - _grayscale) + float4(grayscale_value, grayscale_value, grayscale_value, 1.0) * _grayscale;
-    float falloff = 300.0;
+    float falloff = _pixeldistance / 2.0;
     float4 max_val = float4(0.0, 0.0, 0.0, 0.0);
     bool darker_mode = _pixeldistance == 0.0;
+    const float tints[] = 
+    {
+        205.0 / 360.0, // light blue
+        299.0 / 360.0, // lavender 
+        31.0 / 360.0,  // light orange
+        1.0 / 360.0, // rose 
+        248.0 / 360.0, // light yellow
+        166.0 / 360.0  // light green
+    };
     if (darker_mode)
     {
         _pixeldistance = 1200.0;
         falloff = 700.0;
     }
-    for (int i = 0; i < _num_elements_to_draw; i++)
+    if (_moving_ball_mode) 
     {
+        _pixeldistance = 400.0;
+        falloff = 200.0;
+	}
+    for (int i = 0; i < 6; i++)
+    {
+        float local_grayscale_value = grayscale_value;
         float distance_to_center = sqrt((x - _centerX[i]) * (x - _centerX[i]) + (y - _centerY[i]) * (y - _centerY[i]));
-        _Result[id.xy] = float4(0.0, 0.0, 0.0, 0.0);
-        float4 val = 0.0;
+        // _Result[id.xy] = float4(0.0, 0.0, 0.0, 0.0);
+        float4 val = float4(0.0, 0.0, 0.0, 0.0);
+
+        // Inside the range
         if (_pixeldistance > distance_to_center)
         {
             val = value;
+        } 
+        else 
+        {
+            local_grayscale_value = 0.0;
         }
+
+        // Falloff range (inside)
         if (distance_to_center < _pixeldistance && distance_to_center > (_pixeldistance - falloff))
         {
             float falloff_pos = 1.0 - (distance_to_center - (_pixeldistance - falloff)) / falloff;
             val = float4(0.0, 0.0, 0.0, 0.0) * (1.0 - value) + value * falloff_pos;
         }
+
+        // Make it brighter for the first one
         if (distance_to_center < 100 && darker_mode)
         {
-            val *= 5;
+            val *= 5.0;
         }
-        if (max_val.r < val.r && max_val.g < val.g && max_val.b < val.b)
+
+        // Add a touch of tint of the color of the ball
+        float3 rgb = HUEtoRGB(tints[i]);
+        float4 tint_component = float4(rgb.r, rgb.g, rgb.b, 1);
+
+        if (_moving_ball_mode)
         {
-            max_val = val;
+            max_val = (max_val + tint_component * val * 0.5 + val * 0.5) * 1;
+        } 
+        else 
+        {
+            max_val = max_val + tint_component * val;
         }
     }
     if (darker_mode)
     {
         max_val = max_val * 0.1;
+    } 
+    else 
+    {
+        max_val /= 6;
     }
-    _Result[id.xy] = max_val;
+
+    if (_moving_ball_mode)
+    {
+		_Result[id.xy] = max_val  + grayscale_value * 0.04;
+    } else 
+    {
+		_Result[id.xy] = max_val;
+    }
 }

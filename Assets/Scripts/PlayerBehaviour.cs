@@ -17,24 +17,13 @@ public class PlayerBehaviour : MonoBehaviour
     //Boleanos
     public bool moverBola;
     public bool moverJugador;
-    public bool bola0_reached;
     public bool lookingLeft;
     public bool metaAlcanzada = false;
     public bool tiempoAcabado = false;
 
 
-    //Para las bolas
-    [SerializeField]
-    GameObject bola1;
-    [SerializeField]
-    GameObject bola2;
-    [SerializeField]
-    GameObject bola3;
-    [SerializeField]
-    GameObject bola4;
-    [SerializeField]
-    GameObject bola5;
-    [SerializeField]
+    public bool[] bola_reached;
+
     GameObject manoAnimation;
     [SerializeField]
     float velAnim;
@@ -43,8 +32,8 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     float tamañoBola;
     int light_size_idx;
-    int[] light_sizes = { 0, 300, 400, 500, 600, 700, 1000, 1200};
-    float [] gray_scale_values= { 1.0f, 1.0f, 0.8f, 0.7f, 0.6f, 0.5f, 0.4f, 0.0f};
+    int[] light_sizes = { 0, 100, 200, 300, 400, 500, 6000, 700 };
+    float[] gray_scale_values = { 1.0f, 1.0f, 0.8f, 0.7f, 0.6f, 0.5f, 0.4f, 0.0f };
 
     public GameObject mano;
 
@@ -92,68 +81,48 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (collision.CompareTag("bola1"))
         {
-            LeanTween.scale(collision.gameObject, collision.gameObject.transform.localScale, velAnim).setEase(curvAnim).setOnComplete(() =>
-            {
-                //LeanTween.scale(bola1, Vector2.one*tamañoBola, velAnim);
-                bola0_reached = true;
-                light_size_idx += 1;
-                ElShader.instance.distance = light_sizes[light_size_idx];
-                ElShader.instance.grayscale= gray_scale_values[light_size_idx];
-            });
+            bola_reached[0] = true;
+            light_size_idx += 1;
+            ElShader.instance.num_elements_to_draw = 5;
+            ElShader.instance.distance = light_sizes[light_size_idx];
+            ElShader.instance.grayscale = gray_scale_values[light_size_idx];
         }
         if (collision.CompareTag("bola2"))
         {
-            LeanTween.scale(collision.gameObject, Vector2.zero, velAnim).setEase(curvAnim).setOnComplete(() =>
-            {
-                //bola2.SetActive(true);
-                //LeanTween.scale(bola2, Vector2.one * tamañoBola, velAnim);
-                light_size_idx += 1;
-                ElShader.instance.distance = light_sizes[light_size_idx];
-                ElShader.instance.grayscale = gray_scale_values[light_size_idx];
-
-            });
+            bola_reached[1] = true;
+            light_size_idx += 1;
+            ElShader.instance.distance = light_sizes[light_size_idx];
+            ElShader.instance.grayscale = gray_scale_values[light_size_idx];
         }
         if (collision.CompareTag("bola3"))
         {
-            LeanTween.scale(collision.gameObject, Vector2.zero, velAnim).setEase(curvAnim).setOnComplete(() =>
-            {
-                //bola3.SetActive(true);
-                //LeanTween.scale(bola3, Vector2.one * tamañoBola, velAnim);
-                light_size_idx += 1;
-                ElShader.instance.distance = light_sizes[light_size_idx];
-                ElShader.instance.grayscale = gray_scale_values[light_size_idx];
-            });
+            bola_reached[2] = true;
+            light_size_idx += 1;
+            ElShader.instance.distance = light_sizes[light_size_idx];
+            ElShader.instance.grayscale = gray_scale_values[light_size_idx];
         }
         if (collision.CompareTag("bola4"))
         {
-            LeanTween.scale(collision.gameObject, Vector2.zero, velAnim).setEase(curvAnim).setOnComplete(() =>
-            {
-                //bola4.SetActive(true);
-                //LeanTween.scale(bola4, Vector2.one * tamañoBola, velAnim);
-                light_size_idx += 1;
-                ElShader.instance.grayscale = gray_scale_values[light_size_idx];
-                ElShader.instance.distance = light_sizes[light_size_idx];
-            });
+            bola_reached[3] = true;
+            light_size_idx += 1;
+            ElShader.instance.grayscale = gray_scale_values[light_size_idx];
+            ElShader.instance.distance = light_sizes[light_size_idx];
         }
         if (collision.CompareTag("bola5"))
         {
-            LeanTween.scale(collision.gameObject, Vector2.zero, velAnim).setEase(curvAnim).setOnComplete(() =>
-            {
-                //bola5.SetActive(true);
-                //LeanTween.scale(bola5, Vector2.one * tamañoBola, velAnim);
-                light_size_idx += 1;
-                ElShader.instance.grayscale = gray_scale_values[light_size_idx];
-                ElShader.instance.distance = light_sizes[light_size_idx];
-            });
+            bola_reached[4] = true;
+            light_size_idx += 1;
+            light_size_idx += 1;
+            ElShader.instance.grayscale = gray_scale_values[light_size_idx];
+            ElShader.instance.distance = light_sizes[light_size_idx];
         }
         if (collision.CompareTag("bola6"))
         {
-            LeanTween.scale(collision.gameObject, Vector2.zero, velAnim).setEase(curvAnim).setOnComplete(() =>
-            {
-                light_size_idx += 1;
-                ElShader.instance.grayscale = gray_scale_values[light_size_idx];
-                ElShader.instance.distance = light_sizes[light_size_idx];
-            });
+            bola_reached[5] = true;
+            light_size_idx += 1;
+            light_size_idx += 1;
+            ElShader.instance.grayscale = gray_scale_values[light_size_idx];
+            ElShader.instance.distance = light_sizes[light_size_idx];
         }
         if (collision.CompareTag("Finish"))
         {
@@ -162,9 +131,9 @@ public class PlayerBehaviour : MonoBehaviour
         if (light_size_idx == 6 && TimeController.instance.tiempo > 0 && metaAlcanzada)
         {
             Debug.Log("Cambiando a escena win");
-            SceneManager.LoadScene("Win"); 
+            SceneManager.LoadScene("Win");
         }
-        if (metaAlcanzada==true && light_size_idx < 6 && TimeController.instance.tiempo > 0)
+        if (metaAlcanzada == true && light_size_idx < 6 && TimeController.instance.tiempo > 0)
         {
             Debug.Log("Recargar Escena");
             SceneManager.LoadScene("Nivel");

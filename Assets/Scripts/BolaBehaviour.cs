@@ -45,7 +45,12 @@ public class BolaBehaviour : MonoBehaviour
             float speedX = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
             float speedY = Input.GetAxis("Vertical") * Time.deltaTime * speed;
             Vector3 posicion = transform.position;
+            ElShader.instance.movingBallMode = true;
             transform.position = new Vector3(speedX + posicion.x, speedY + posicion.y, posicion.z);
+        } else
+        {
+            ElShader.instance.movingBallMode = false;
+
         }
         int look = -1;
         if (PlayerController.instance.lookingLeft)
@@ -59,10 +64,9 @@ public class BolaBehaviour : MonoBehaviour
         ElShader.instance.centerX[0] = x;
         ElShader.instance.centerY[0] = y;
         float wiggleSpeed = 4.0f;
-        float wiggleDistance = 0.01f;
-        if (PlayerController.instance.bola0_reached)
+        float wiggleDistance = 0.005f;
+        if (PlayerController.instance.bola_reached[0])
         {
-            ElShader.instance.num_elements_to_draw = 1; // todo, this should be 6 later on
             if (PlayerController.instance.moverJugador)
             {
                 transform.position = target;
@@ -82,12 +86,6 @@ public class BolaBehaviour : MonoBehaviour
                 PlayerController.instance.animator.SetBool("LookingUp", false);
                 StartCoroutine(Tween(target));
             }
-        }
-        else
-        {
-            ElShader.instance.num_elements_to_draw = 2;
-            ElShader.instance.centerX[1] = Camera.main.WorldToScreenPoint(PlayerController.instance.transform.position).x;
-            ElShader.instance.centerY[1] = Camera.main.WorldToScreenPoint(PlayerController.instance.transform.position).y;
         }
 
     }
@@ -118,14 +116,5 @@ public class BolaBehaviour : MonoBehaviour
         } while (time < moveDuration);
         PlayerController.instance.moverBola = false;
         PlayerController.instance.moverJugador = true;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        PlayerBehaviour controller = GetComponent<PlayerBehaviour>();
-        if (controller != null)
-        {
-            //Poner que el gameobject sea hijo del jugador
-        }
     }
 }

@@ -55,12 +55,6 @@ public class PlayerController : PlayerBehaviour
             animator.SetBool("IsJumping", false);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("");
-        }
-
-
         // Permite al jugador saltar si está en el suelo, no está recibiendo daño y presiona la barra espaciadora
         if (enSuelo && (Input.GetButtonDown("Fire3") || Input.GetKeyDown(KeyCode.Space)) && moverJugador)
         {
@@ -98,20 +92,13 @@ public class PlayerController : PlayerBehaviour
 
             Vector3 posicion = transform.position;
             transform.position = new Vector3(velocidadX + posicion.x, posicion.y, posicion.z);
-
-            int look = -1;
-            if (lookingLeft)
-            {
-                look = 1;
-            }
-
         }
     }
 
-    // Método para dibujar gizmos en el editor, útil para depuración
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red; // Cambia el color del gizmo a rojo
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * longitudRaycast); // Dibuja la línea del Raycast hacia abajo
-    }
+    //// Método para dibujar gizmos en el editor, útil para depuración
+    //void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.red; // Cambia el color del gizmo a rojo
+    //    Gizmos.DrawLine(transform.position, transform.position + Vector3.down * longitudRaycast); // Dibuja la línea del Raycast hacia abajo
+    //}
 }
