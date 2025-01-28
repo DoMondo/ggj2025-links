@@ -48,9 +48,8 @@ public class PlayerController : PlayerBehaviour
         Movimiento(); // Control del movimiento horizontal del jugador
         // Detecta si el jugador está tocando el suelo usando un Raycast
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, longitudRaycast, capaSuelo);
-        
         enSuelo = hit.collider != null;
-        //enSuelo = rb.velocityY == 0.0f;
+
         if (enSuelo)
         {
             animator.SetBool("IsJumping", false);
@@ -105,14 +104,7 @@ public class PlayerController : PlayerBehaviour
             {
                 look = 1;
             }
-            Vector3 target = transform.position + new Vector3(-1f * look * 0.5f, 0.5f, 0f);
-            BolaBehaviour.instance.transform.position = target;
-            // Set vignetting accordingly
-            float x = Camera.main.WorldToScreenPoint(transform.position).x;
-            float y = Camera.main.WorldToScreenPoint(transform.position).y;
 
-            ElShader.instance.centerX = x;
-            ElShader.instance.centerY = y;
         }
     }
 

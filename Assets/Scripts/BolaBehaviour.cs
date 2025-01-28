@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UIElements;
@@ -14,6 +15,7 @@ public class BolaBehaviour : MonoBehaviour
     public float speed = 5f;
     public float incrementoPorColeccionable = 1f;
     public float moveDuration = 0.2f;
+    public CinemachineVirtualCamera vcam;
 
 
     private void Awake()
@@ -32,33 +34,64 @@ public class BolaBehaviour : MonoBehaviour
     {
 
     }
+    private Vector3 velocity;
+    private bool changed_follow = false;
 
     // Update is called once per frame
     void Update()
     {
-        MoverBolaOn();
+        if (PlayerController.instance.moverBola)
+        {
+            float speedX = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
+            float speedY = Input.GetAxis("Vertical") * Time.deltaTime * speed;
+            Vector3 posicion = transform.position;
+            transform.position = new Vector3(speedX + posicion.x, speedY + posicion.y, posicion.z);
+        }
         int look = -1;
         if (PlayerController.instance.lookingLeft)
         {
             look = 1;
         }
-        Vector3 target = PlayerController.instance.transform.position + new Vector3(-1f * look * 0.5f, 0.5f, 0f);
-        if (Input.GetButtonDown("Fire2"))//Configurar el mando y teclado
+        Vector3 target = PlayerController.instance.transform.position + new Vector3(-1f * look * 0.8f, 0.8f, 0f);
+        target = Vector3.SmoothDamp(transform.position, target, ref velocity, 0.08f);
+        float x = Camera.main.WorldToScreenPoint(transform.position).x;
+        float y = Camera.main.WorldToScreenPoint(transform.position).y;
+        ElShader.instance.centerX[0] = x;
+        ElShader.instance.centerY[0] = y;
+        float wiggleSpeed = 4.0f;
+        float wiggleDistance = 0.01f;
+        if (PlayerController.instance.bola0_reached)
         {
-            PlayerController.instance.animator.SetBool("LookingUp",false);//No me la hace
-            StartCoroutine(Tween(target));
-            BolaBehaviour.instance.MoverBolaOn();
+            ElShader.instance.num_elements_to_draw = 1; // todo, this should be 6 later on
+            if (PlayerController.instance.moverJugador)
+            {
+                transform.position = target;
+            }
+            transform.localPosition = transform.localPosition + new Vector3(Mathf.Sin(Time.time * wiggleSpeed + 21.0f) * wiggleDistance, Mathf.Sin(Time.time * wiggleSpeed) * wiggleDistance, 0);
+            if (!changed_follow)
+            {
+                ((CapsuleCollider2D)gameObject.GetComponent(typeof(CapsuleCollider2D))).isTrigger = false;
+                ((CapsuleCollider2D)gameObject.GetComponent(typeof(CapsuleCollider2D))).enabled = false;
+                changed_follow = true;
+                vcam.Follow = transform;
+                vcam.LookAt = transform;
+            }
+            // Return to player
+            if (Input.GetButtonDown("Fire2"))//Configurar el mando y teclado
+            {
+                PlayerController.instance.animator.SetBool("LookingUp", false);
+                StartCoroutine(Tween(target));
+            }
         }
-        if (PlayerController.instance.moverBola)
+        else
         {
-            // Set vignetting accordingly
-            float x = Camera.main.WorldToScreenPoint(transform.position).x;
-            float y = Camera.main.WorldToScreenPoint(transform.position).y;
-            ElShader.instance.centerX = x;
-            ElShader.instance.centerY = y;
+            ElShader.instance.num_elements_to_draw = 2;
+            ElShader.instance.centerX[1] = Camera.main.WorldToScreenPoint(PlayerController.instance.transform.position).x;
+            ElShader.instance.centerY[1] = Camera.main.WorldToScreenPoint(PlayerController.instance.transform.position).y;
         }
 
     }
+
     float InOutQuadBlend(float t)
     {
         if (t <= 0.5f)
@@ -85,18 +118,6 @@ public class BolaBehaviour : MonoBehaviour
         } while (time < moveDuration);
         PlayerController.instance.moverBola = false;
         PlayerController.instance.moverJugador = true;
-    }
-
-    public void MoverBolaOn()
-    {
-        if (PlayerController.instance.moverBola)
-        {
-            float speedX = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
-            float speedY = Input.GetAxis("Vertical") * Time.deltaTime * speed;
-            Vector3 posicion = transform.position;
-            transform.position = new Vector3(speedX + posicion.x, speedY + posicion.y, posicion.z);
-        }
-
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

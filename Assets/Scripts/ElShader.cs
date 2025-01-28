@@ -14,9 +14,12 @@ public class ElShader : MonoBehaviour
     RenderTexture _renderTexture;
 
     [Range(0, 2000)] public int distance = 1000;
-    [Range(0, 2000)] public float centerX = 1000;
-    [Range(0, 2000)] public float centerY = 1000;
+
+    public float[] centerX;
+    public float[] centerY;
+
     [Range(0, 1)] public float grayscale;
+    public int num_elements_to_draw;
 
     private void Awake()
     {
@@ -59,9 +62,11 @@ public class ElShader : MonoBehaviour
         shader.SetInt("_ResultWidth", _renderTexture.width);
         shader.SetInt("_ResultHeight", _renderTexture.height);
         shader.SetInt("_pixeldistance",  distance);
-        shader.SetFloat("_centerX", centerX);
-        shader.SetFloat("_centerY", centerY);
+
         shader.SetFloat("_grayscale", grayscale);
+        shader.SetFloats("_centerX", centerX);
+        shader.SetFloats("_centerY", centerY);
+        shader.SetInt("_num_elements_to_draw", num_elements_to_draw);
 
         shader.SetTexture(mainKernel, "_Result", _renderTexture);
         shader.GetKernelThreadGroupSizes(mainKernel, out uint xGroupSize, out uint yGroupSize, out _);

@@ -17,6 +17,7 @@ public class PlayerBehaviour : MonoBehaviour
     //Boleanos
     public bool moverBola;
     public bool moverJugador;
+    public bool bola0_reached;
     public bool lookingLeft;
     public bool metaAlcanzada = false;
     public bool tiempoAcabado = false;
@@ -42,8 +43,8 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     float tamañoBola;
     int light_size_idx;
-    int[] light_sizes = { 300, 400, 500, 600, 700, 1000, 1200};
-    float [] gray_scale_values= { 1.0f, 0.8f, 0.7f, 0.6f, 0.5f, 0.4f, 0.0f};
+    int[] light_sizes = { 0, 300, 400, 500, 600, 700, 1000, 1200};
+    float [] gray_scale_values= { 1.0f, 1.0f, 0.8f, 0.7f, 0.6f, 0.5f, 0.4f, 0.0f};
 
     public GameObject mano;
 
@@ -54,13 +55,6 @@ public class PlayerBehaviour : MonoBehaviour
         metaAlcanzada = false;
         ElShader.instance.distance = light_sizes[light_size_idx];
         ElShader.instance.grayscale = gray_scale_values[light_size_idx];
-
-        bola1.SetActive(false);
-        bola2.SetActive(false);
-        bola3.SetActive(false);
-        bola4.SetActive(false);
-        bola5.SetActive(false);
-
     }
 
     // Update is called once per frame
@@ -72,7 +66,6 @@ public class PlayerBehaviour : MonoBehaviour
             moverBola = true;
             moverJugador = false;
             PlayerController.instance.animator.SetFloat("Speed", 0.0f);
-            BolaBehaviour.instance.MoverBolaOn();
         }
         if (TimeController.instance.tiempo <= 0 && !tiempoAcabado)
         {
@@ -87,9 +80,6 @@ public class PlayerBehaviour : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         SceneManager.LoadScene("Nivel");
-
-
-        
     }
 
     public void AumentaNumeroRecuerdos(int amount)
@@ -102,10 +92,10 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (collision.CompareTag("bola1"))
         {
-            LeanTween.scale(collision.gameObject, Vector2.zero, velAnim).setEase(curvAnim).setOnComplete(() =>
+            LeanTween.scale(collision.gameObject, collision.gameObject.transform.localScale, velAnim).setEase(curvAnim).setOnComplete(() =>
             {
-                bola1.SetActive(true);
-                LeanTween.scale(bola1, Vector2.one*tamañoBola, velAnim);
+                //LeanTween.scale(bola1, Vector2.one*tamañoBola, velAnim);
+                bola0_reached = true;
                 light_size_idx += 1;
                 ElShader.instance.distance = light_sizes[light_size_idx];
                 ElShader.instance.grayscale= gray_scale_values[light_size_idx];
@@ -115,8 +105,8 @@ public class PlayerBehaviour : MonoBehaviour
         {
             LeanTween.scale(collision.gameObject, Vector2.zero, velAnim).setEase(curvAnim).setOnComplete(() =>
             {
-                bola2.SetActive(true);
-                LeanTween.scale(bola2, Vector2.one * tamañoBola, velAnim);
+                //bola2.SetActive(true);
+                //LeanTween.scale(bola2, Vector2.one * tamañoBola, velAnim);
                 light_size_idx += 1;
                 ElShader.instance.distance = light_sizes[light_size_idx];
                 ElShader.instance.grayscale = gray_scale_values[light_size_idx];
@@ -127,8 +117,8 @@ public class PlayerBehaviour : MonoBehaviour
         {
             LeanTween.scale(collision.gameObject, Vector2.zero, velAnim).setEase(curvAnim).setOnComplete(() =>
             {
-                bola3.SetActive(true);
-                LeanTween.scale(bola3, Vector2.one * tamañoBola, velAnim);
+                //bola3.SetActive(true);
+                //LeanTween.scale(bola3, Vector2.one * tamañoBola, velAnim);
                 light_size_idx += 1;
                 ElShader.instance.distance = light_sizes[light_size_idx];
                 ElShader.instance.grayscale = gray_scale_values[light_size_idx];
@@ -138,8 +128,8 @@ public class PlayerBehaviour : MonoBehaviour
         {
             LeanTween.scale(collision.gameObject, Vector2.zero, velAnim).setEase(curvAnim).setOnComplete(() =>
             {
-                bola4.SetActive(true);
-                LeanTween.scale(bola4, Vector2.one * tamañoBola, velAnim);
+                //bola4.SetActive(true);
+                //LeanTween.scale(bola4, Vector2.one * tamañoBola, velAnim);
                 light_size_idx += 1;
                 ElShader.instance.grayscale = gray_scale_values[light_size_idx];
                 ElShader.instance.distance = light_sizes[light_size_idx];
@@ -149,8 +139,8 @@ public class PlayerBehaviour : MonoBehaviour
         {
             LeanTween.scale(collision.gameObject, Vector2.zero, velAnim).setEase(curvAnim).setOnComplete(() =>
             {
-                bola5.SetActive(true);
-                LeanTween.scale(bola5, Vector2.one * tamañoBola, velAnim);
+                //bola5.SetActive(true);
+                //LeanTween.scale(bola5, Vector2.one * tamañoBola, velAnim);
                 light_size_idx += 1;
                 ElShader.instance.grayscale = gray_scale_values[light_size_idx];
                 ElShader.instance.distance = light_sizes[light_size_idx];

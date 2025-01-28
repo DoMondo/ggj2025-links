@@ -4,29 +4,55 @@ RWTexture2D<float4> _Result;
 
 int _ResultWidth;
 int _ResultHeight;
-float _centerX;
-float _centerY;
+
+float _centerX[7];
+float _centerY[7];
+int _num_elements_to_draw;
+
 float _pixeldistance;
 float _grayscale;
 
 [numthreads(1, 1, 1)]
 void Vignette(uint3 id : SV_DispatchThreadID)
 {
-
     float x = id.x;
     float y = id.y;
-    float distance_to_center = sqrt((x - _centerX) * (x - _centerX) + (y - _centerY) * (y - _centerY));
     float grayscale_value = _Result[id.xy][0].r + _Result[id.xy].g * 0.587 + _Result[id.xy].b * 0.114;
     float4 value = _Result[id.xy] * (1 - _grayscale) + float4(grayscale_value, grayscale_value, grayscale_value, 1.0) * _grayscale;
-    const float falloff = 300.0;    
-    _Result[id.xy] = float4(0.0, 0.0, 0.0, 0.0);
-    if (_pixeldistance > distance_to_center)
+    float falloff = 300.0;
+    float4 max_val = float4(0.0, 0.0, 0.0, 0.0);
+    bool darker_mode = _pixeldistance == 0.0;
+    if (darker_mode)
     {
-        _Result[id.xy] = value;
+        _pixeldistance = 1200.0;
+        falloff = 700.0;
     }
-    if (distance_to_center < _pixeldistance && distance_to_center > (_pixeldistance - falloff))
+    for (int i = 0; i < _num_elements_to_draw; i++)
     {
-        float falloff_pos = 1.0 - (distance_to_center - (_pixeldistance - falloff)) / falloff;
-        _Result[id.xy] = float4(0.0, 0.0, 0.0, 0.0) * (1.0 - value) + value * falloff_pos;
+        float distance_to_center = sqrt((x - _centerX[i]) * (x - _centerX[i]) + (y - _centerY[i]) * (y - _centerY[i]));
+        _Result[id.xy] = float4(0.0, 0.0, 0.0, 0.0);
+        float4 val = 0.0;
+        if (_pixeldistance > distance_to_center)
+        {
+            val = value;
+        }
+        if (distance_to_center < _pixeldistance && distance_to_center > (_pixeldistance - falloff))
+        {
+            float falloff_pos = 1.0 - (distance_to_center - (_pixeldistance - falloff)) / falloff;
+            val = float4(0.0, 0.0, 0.0, 0.0) * (1.0 - value) + value * falloff_pos;
+        }
+        if (distance_to_center < 100 && darker_mode)
+        {
+            val *= 5;
+        }
+        if (max_val.r < val.r && max_val.g < val.g && max_val.b < val.b)
+        {
+            max_val = val;
+        }
     }
+    if (darker_mode)
+    {
+        max_val = max_val * 0.1;
+    }
+    _Result[id.xy] = max_val;
 }
